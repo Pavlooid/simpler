@@ -8,4 +8,8 @@ class TestsController < Simpler::Controller
 
   end
 
+  def show
+    @test_id = params[:id]
+  end
+
 end

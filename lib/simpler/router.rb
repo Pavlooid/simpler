@@ -18,8 +18,21 @@ module Simpler
     def route_for(env)
       method = env['REQUEST_METHOD'].downcase.to_sym
       path = env['PATH_INFO']
+      params = env['simpler.route_params'] ||= {}
 
-      @routes.find { |route| route.match?(method, path) }
+      @routes.find { |route| route.match?(method, path, params) }
+    end
+
+    def route_not_find(env)
+      method = env['REQUEST_METHOD'].downcase.to_sym
+      path = env['PATH_INFO']
+
+      Rack::Response.new.then do |responce|
+        responce.status = 404
+        responce.content_type = 'text/html'
+        responce.write("Route #{path} not find!\n")
+        responce.finish
+      end
     end
 
     private
